@@ -1,0 +1,41 @@
+<div class="container h-100">
+    <div class="d-flex justify-content-center h-100 mt-5 pt-5">
+        <div class="user_card">
+            <div class="d-flex justify-content-center">
+                <div class="brand_logo_container">
+                    <div class="font-weight-bold mt-4">
+                        <span class="font-color">Password</span><br>
+                        <span class="font-color">Strength</span><br>
+                        <span class="font-color">Checker</span>
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex justify-content-center form_container">
+                <form [formGroup]="loginForm" class="mb-5 pb-5">
+                    <div class="input-group mb-2">
+                        <div class="input-group-append">
+                            <span class="input-group-text"><i class="fas fa-key"></i></span>
+                        </div>
+                        <input id="input-password" type="password" formControlName="password" [(ngModel)]="password" (ngModelChange)="onChangeInputPassword()"
+                            class="form-control input_pass" value="" placeholder="password" (focus)="checkIfCapsLockEnabled()"/>
+                            <button type="button" class="btn btn-info" (click)="showPassword()">{{isShowPassword ? 'Hide' : 'Show'}}</button>
+                    </div>
+                    <div>
+                        <span id="text">WARNING! Caps lock is ON.</span>
+                    </div>
+                    <div class="alert alert-danger"
+                        *ngIf="!loginForm.get('password').valid && loginForm.get('password').touched && isLoadStrengthComponent">
+                        <span>Password must contain more than 4 characters, 1 upper case letter, 1 special character and a number</span>
+                    </div>
+                    <div class="justify-content-center mt-3 login_container">
+                        <button type="button" name="button" class="btn btn-primary" (click)="checkStrength()">Check Password Strength</button>
+                        <!-- *ngIf="loginForm.get('password').valid && loginForm.get('password').touched && isExistPassword" -->
+                        <div *ngIf="isLoadStrengthComponent">
+                            <app-password-strength [passwordToCheck]="password"></app-password-strength>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
