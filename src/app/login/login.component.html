@@ -1,0 +1,90 @@
+<div class="container h-100">
+    <div class="d-flex justify-content-center h-100 mt-5 pt-5">
+        <div class="user_card">
+            <div class=" row d-flex justify-content-center">
+                <div class="brand_logo_container">
+                    <div class="font-weight-bold mt-4">
+                        <span class="font-color">Password</span><br>
+                        <span class="font-color">Strength</span><br>
+                        <span class="font-color">Checker</span>
+                    </div>
+                </div>
+                <div class="row">
+                    <span><i class="fa-solid fa-ruler"></i></span>
+                </div>
+            </div>
+            <div class="row d-flex justify-content-center form_container">
+                <form [formGroup]="loginForm" class="mb-5 pb-5">
+                    <div class="input-group mb-2 px-4">
+                        <div class="input-group-append">
+                            <span class="input-group-text"><i class="fa fa-key" aria-hidden="true"></i></span>
+                        </div>
+                        <input id="input-password" type="password" formControlName="password" [(ngModel)]="password"
+                            (ngModelChange)="onChangeInputPassword()" class="form-control input_pass" value=""
+                            placeholder="password" (focus)="checkIfCapsLockEnabled()" />
+                        <div *ngIf="loginForm.get('password').minlength">
+                            Name must be at least 5 characters long.
+                        </div>
+                        <div class="input-group-append ml-1">
+                            <span (click)="showPassword()" [title]="isShowPassword ? 'Hide' : 'Show'" class="mt-1">
+                                <span *ngIf="isShowPassword"><i class="fa fa-eye" aria-hidden="true"></i></span>
+                                <span *ngIf="!isShowPassword"><i class="fa fa-eye-slash" aria-hidden="true"></i></span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="ml-4 mb-1 mr-5 text-center">
+                        <span id="text">WARNING! Caps lock is ON.</span>
+                    </div>
+                    <div class="alert alert-success mx-4" role="alert" *ngIf="isExistInCommonPasswords()">
+                        <h4 class="alert-heading">Predictable Password!</h4>
+                        <p>The password which you gave is a predictable and a common sequence</p>
+                        <p>Please change your password !!!</p>
+                    </div>
+                    <div class="alert alert-success mx-4" role="alert" *ngIf="hasSpecialCharacterAtStart()">
+                        <h4 class="alert-heading">Special Character at start!!!</h4>
+                        <p>Shouldn't include special character at start</p>
+                    </div>
+                    <div class="row justify-content-center mt-3 login_container">
+                        <div class="col-6 pl-2"><button type="button" name="button" class="btn btn-primary" (click)="checkStrength()">Check Password Strength</button></div>
+                        <div class="col-6"><button type="button" class="btn btn-success ml-2" data-toggle="modal" data-target="#exampleModal">Set Password length</button></div>
+                        <div *ngIf="isLoadStrengthComponent">
+                            <app-password-strength [passwordToCheck]="password"
+                                (strengthEvent)="getStrengthFromPasswordComponent($event)"></app-password-strength>
+                        </div>
+                    </div>
+                    <div class="alert alert-danger mx-3" *ngIf="!loginForm.get('password').valid && loginForm.get('password').touched && isLoadStrengthComponent">
+                    <span class="d-block">Password must contain at least <span>{{passwordMinLength}}</span>
+                        characters, 1 upper case letter, 1 lowercase letter, 1 special character and a number</span>
+                    <span>For example, give the password like </span>
+                    <span class="font-weight-bold">Asdfgh@123!@#</span>
+                </div>
+                    <div class="pl-5 ml-5" *ngIf="password && password.length <= 3 && isLoadStrengthComponent">
+                        <button type="button" class="btn btn-info" (click)="suggestPassword()">Generate Valid Password</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input id="password-min-length" type="text" pattern="([0-9]|[0-9]|[0-9])"
+                        class="form-control input_pass" value="4"
+                        placeholder="set password minimum length" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="setLength()">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
